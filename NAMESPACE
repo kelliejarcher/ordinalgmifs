@@ -4,6 +4,7 @@ importFrom("graphics", "matplot", "plot", "title")
 importFrom("stats", "constrOptim", "dnorm", "model.matrix", "model.frame",
              "model.response", "optim", "pnorm", "qnorm")
 importFrom("survival", "Surv")
+importFrom("methods", "is")
 S3method(coef, ordinalgmifs)
 S3method(plot, ordinalgmifs)
 S3method(predict, ordinalgmifs)
