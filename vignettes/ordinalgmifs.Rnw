@@ -1,0 +1,203 @@
+% -*- mode: noweb; noweb-default-code-mode: R-mode; -*-
+% \VignetteIndexEntry{An R Package for Ordinal Response Modeling for High-Dimensional Data} 
+% \VignetteKeyword{models}
+%% no need \usepackage{Sweave.sty}
+\documentclass[article, shortnames, nojss]{jss}
+\usepackage{amsmath, graphicx}
+%\usepackage[superscript,biblabel]{cite}
+\title{A tutorial on fitting ordinal response models in high-dimensional datasets with the \pkg{ordinalgmifs} package}
+\author{Kellie J. Archer$^\star$,  Jiayi Hou$^b$, Qing Zhou$^a$,  Kyle Ferber$^a$,  John G. Layne$^a$,  Amanda Gentry$^a$\\
+$^\star$ The Ohio State University,
+$^a$ Virginia Commonwealth University,
+$^b$ University of California San Diego}
+\newcommand{\bet}{\mbox{\boldmath $\beta$}}
+\newcommand{\gambold}{\mbox{\boldmath $\gamma$}}
+\newcommand{\pibold}{\mbox{\boldmath $\pi$}}
+\newcommand{\phibold}{\mbox{\boldmath $\phi$}}
+\newcommand{\thetabold}{\mbox{\boldmath $\theta$}}
+\newcommand{\nubold}{\mbox{\boldmath $\nu$}}
+\newcommand{\taubold}{\mbox{\boldmath $\tau$}}
+\newcommand{\alphabold}{\mbox{\boldmath $\alpha$}}
+\newcommand{\wbold}{\boldsymbol{w}}
+\Plainauthor{Kellie J Archer, Jiayi Hou, Qing Zhou, Kyle Ferber, John G. Layne, Amanda Gentry}
+\Plaintitle{ordinalgmifs: An R Package for Ordinal Regression in High-dimensional Data Settings}
+\Shorttitle{High-dimensional Ordinal Response Models}
+
+\Abstract{In this tutorial we describe our \pkg{ordinalgmifs} \proglang{R} package, available from the Comprehensive R Archive Network, that can fit a variety of ordinal response models when the number of predictors ($P$) exceeds the sample size ($n$).  We then illustrate the functions in the \pkg{ordinalgmifs} \proglang{R} package using a dataset where we were interested in predicting normal $<$ pre-neoplastic $<$ neoplastic states of liver disease using a subset of CpG sites from a high-throughout methylation assay \citep{ArcherHCC}.  
+}
+\Keywords{ordinal response, high-dimensional features, penalized models, \proglang{R}}
+\Plainkeywords{ordinal response, high-dimensional features, penalized models, R}
+
+\Address{
+Kellie J. Archer\\
+Division of Biostatistics\\
+College of Public Health\\
+The Ohio State University\\
+1841 Neil Ave.\\ 
+240 Cunz Hall\\
+Columbus, OH 43210\\
+E-mail: \email{archer.43@osu.edu}\\
+URL: \url{https://cph.osu.edu/people/karcher}\\
+ \\
+Jiayi Hou\\
+Clinical and Translational Research Institute\\
+University of California San Diego\\
+San Diego, CA\\
+E-mail: \email{jhou@ucsd.edu}\\
+\\
+Qing Zhou\\
+Department of Biostatistics\\
+Virginia Commonwealth University\\
+Box 980032\\
+Richmond, VA 23298-0032\\
+E-mail: \email{zhouq3@mymail.vcu.edu}\\
+\\
+Kyle Ferber\\
+Department of Biostatistics\\
+Virginia Commonwealth University\\
+Box 980032\\
+Richmond, VA 23298-0032\\
+E-mail: \email{ferberkl@mymail.vcu.edu}\\
+\\
+John G. Layne\\
+Center fo the Study of Biological Complexity\\
+Virginia Commonwealth University\\
+Box 842537\\
+Richmond, VA 23298\\
+E-mail: \email{laynejg@vcu.edu}\\
+\\
+Amanda Gentry\\
+Department of Biostatistics\\
+Virginia Commonwealth University\\
+Box 980032\\
+Richmond, VA 23298-0032\\
+E-mail: \email{gentryae@mymail.vcu.edu}\\
+}
+\SweaveOpts{echo=FALSE}
+\usepackage{a4wide}
+
+\begin{document}
+
+%\maketitle
+\section{Introduction}
+Various algorithms can be used for obtaining solutions for the Least Absolute Shrinkage and Selection Operator (LASSO) \citep{Tibs1996, Tibs1997} and elastic net penalized models \citep{Zou}. In the linear regression setting, the Incremental Forward Stagewise (IFS) is a penalized solution that enforces monotonicity \citep{Hastie}. IFS can be generalized to problems involving other than squared error loss, and the adaption is called the generalized monotone incremental forward stagewise (GMIFS) method \citep{Hastie}. Herein we extended the GMIFS method  \citep{Hastie} to ordinal response setting and implemented various functions in our \pkg{ordinalgmifs} \proglang{R} package \citep{ArcherCI}. The \code{ordinalgmifs} function can be used to fit traditional and penalized cumulative link, forward continuation ratio, and backward continuation ratio models using either a logit, probit, or complementary log-log link. It can also be used to fit adjacent category and stereotype logit models. A detailed description of the methodology is available in \citep{ArcherCI}.
+
+\section{Implementation}
+The \pkg{ordinalgmifs} package was written in the \proglang{R} programming environment \citep{RTeam}.  The \code{ordinalgmifs} function allows the user to specify a model formula, identify the matrix of covariates to be penalized in the model fitting algorithm using the \code{x} parameter, and additionally specify the model type (\code{probability.model}) and link function (\code{link}). The default is to fit a cumulative logit model though allowable probability models include \code{"Cumulative"}, \code{"ForwardCR"}, \code{"BackwardCR"}, \code{"AdjCategory"}, and \code{"Stereotype"} while allowable links include \code{"logit"}, \code{"probit"}, \code{"cloglog"} for the first three and \code{"loge"} and \code{"logit"} for the last two, respectively. The defaults for updating the penalized coefficients are \code{epsilon=0.001} and \code{tol=1e-5}. Our likelihood functions were written in \proglang{R} and  tested by comparing our \proglang{R} output to output produced by the \code{vglm} \proglang{R} \pkg{VGAM} package for cumulative link, adjacent category, forward and backward continuation ratio models and to \proglang{STATA}'s \texttt{slogit} function and the \code{rrvglm} function in the \proglang{R} \pkg{VGAM} for the stereotype logit model using benchmark datasets for data where $P<n$.
+
+\section{Examples}
+The \pkg{ordinalgmifs} package includes example datasets having an ordinal response. These data are a subset of subjects and CpG sites reported in the original paper where liver samples were assayed using the Illumina GoldenGate Methylation BeadArray Cancer Panel I \citep{ArcherHCC}. Technical replicate samples and matched cirrhotic samples from subjects with hepatocellular carcinoma (HCC) were removed to ensure all samples were independent. For the following examples, methylation levels for 45 CpG sites in liver tissue are provided for independent subjects whose liver was either Normal (N=20), cirrhotic but not having HCC (N=16, Cirrhosis non-HCC), and HCC (N=20, Tumor). These data are in two formats: a \code{data.frame} (\code{hccframe}) and as a BioConductor \code{ExpressionSet} (\code{hccmethyl}). We seek to predict \code{group} which indicates sample type (\code{Normal} < \code{Cirrhosis non-HCC} < \code{Tumor}) using the CpG site methylation values as predictor variables. 
+ 
+\subsection{Model Fitting for Data Stored in a data.frame}
+To fit a model where all predictors are penalized the model formula is specified to fit an intercept only model and the predictors to be penalized are specified using the \code{x} parameter. When fitting a penalized model it is expected that more than one variable is included in the \code{x} parameter. The \code{x} parameter can either be a vector naming columns in the \code{data.frame} specified by the \code{data} parameter or \code{x} can be a the \code{data.frame} name with the columns to include (or exclude) indicated by their (negative) index. Prior to model fitting \code{NA} values should be imputed or removed from the \code{data.frame}. By default a cumulative logit model is fit when neither \code{probability.model} nor \code{link} are specified by the user. Because \code{group} is the first variable in the \code{hccframe}, we fit a model penalizing all CpG sites by specifying \code{x=hccframe[,-1]} which simply removes our ordinal outcome. Due to time constraints imposed by CRAN, we changed the default \code{epsilon = 0.001} to reduce run time of this vignette
+<<echo=FALSE>>=
+options(width = 70)
+@
+<<echo=TRUE>>=
+library("ordinalgmifs")
+data(hccframe)
+cumulative.logit<-ordinalgmifs(group ~ 1, x = hccframe[,-1], 
+	data = hccframe, epsilon=0.01)
+@
+Because the GMIFS procedure is incremental, the user may want to specify \code{verbose=TRUE} to print the step number in order to monitor the status of the model fitting procedure.
+
+Methods including \code{coef}, \code{plot}, \code{predict}, \code{fitted}, \code{print}, and \code{summary} can be applied to \code{ordinalgmifs} model objects. Because the returned list differs depending on whether a no penalty subset is included or a stereotype logit model is fit, the \code{print} function returns the object names of the fitted object. 
+<<echo=TRUE>>=
+print(cumulative.logit)
+@
+By default \code{coef}, \code{predict}, and \code{summary} extracts the relevant information from the step in the solution path that attained the minimum AIC.
+<<echo=TRUE>>=
+summary(cumulative.logit)
+@
+However, any step along the solution path can be extracted by specifying the step using the \code{model.select} parameter for these three functions. For example, the model attaining the minimum BIC can be extracted using 
+\newline \code{summary(cumulative.logit, model.select=which.min(cumulative.logit$BIC))}. \newline Alternatively, the 150$^{th}$ step can be extracted using \newline \code{summary(cumulative.logit, model.select=150)}. \newline Note that the $\alpha_j$ thresholds are labelled as \code{(Intercept):1},$\ldots$,\code{(Intercept):K-1}.
+
+The \code{plot} function plots the solution path of the model fit. The vertical axis can be changed using the \code{type} parameter with allowable selections being \code{"trace"} (default), \code{"AIC"}, \code{"BIC"} or \code{"logLik"}. Although there are default x-axis, y-axis, and titles provided for each plot, the user can modify these by supplying their own arguments to \code{xlab}, \code{ylab}, and \code{main}, respectively.
+\begin{figure}[h]
+  \begin{center}
+<<fig=TRUE, echo=TRUE, width=3, height=3>>=
+plot(cumulative.logit)
+@
+    \caption{Coefficient estimates along the solution path for a fitted \code{ordinalgmifs} object using the \code{hccframe} data.}
+  \end{center}
+\end{figure}
+
+The \code{coef} function extracts the estimated parameters and returns them as a vector. 
+<<echo=TRUE>>=
+coef(cumulative.logit)
+@
+
+The \code{predict} function (or equivalently, \code{fitted}) returns a list containing \code{predicted}, a matrix of the class probabilities from the fitted model, and \code{class}, the class having the maximum predicted probability from the fitted model. As with \code{coef} and \code{summary} the \code{predict} function by default extracts the model that attained the minimum AIC, but predictions for any step along the solution path can be obtained by specifying the step using the \code{model.select} parameter. 
+
+<<echo=TRUE>>=
+phat <- predict(cumulative.logit)
+table(phat$class, hccframe$group)
+head(phat$predicted)
+@
+
+When there are small sample sizes in one or more groups K-fold cross-validation (CV) methods may not perform well as a means to estimate generalization error due to the random inclusion of samples into each of the folds. That is, multiple folds may include few if any subjects from the small classes. Therefore here we have demonstrated N-fold CV for this dataset. Note that we include the \code{drop=FALSE} argument to preserve the dimension format of the object when only one subject comprises the testset.
+\begin{verbatim}
+class<-character()
+for (i in 1:dim(hccframe)[1]) {
+	fit<-ordinalgmifs(group ~ 1, x = hccframe[-i,-1],
+		data = hccframe[-i,])
+	class[i]<-predict(fit, newx=hccframe[i,-1,drop=FALSE])$class
+	}
+table(class, hccframe$group)
+\end{verbatim}
+which yields a generalized misclassification rate of 10.7\%.
+
+The National Institutes of Health released notice NOT-OD-15-102 detailing the requirement for researchers to consider sex as a biological variable, which may lead the analyst to coerce sex into the multivariable model. There are a multitude of clinical scenarios where it is of primary interest to discover the additional predictive value of including molecular features beyond already known risk factors. Therefore, we extended our method to penalize some covariates (high-throughput genomic features) without penalizing others (such as demographic and/or clinical covariates).   The following examples are merely to illustrate additional flexibility of the package \citep{Gentry}. Suppose that \code{DDIT3_P1313_R} is to be coerced into the model and only \code{CDKN2B_seq_50_S294_F}, \code{ERN1_P809_R}, \code{GML_E144_F}, and \code{HDAC9_P137_R} are to be penalized (the model includes only the 5 CpG sites). Any variable(s) to be coerced into the model should appear on the right-hand side of the model formula and represents the \lq\lq unpenalized predictors\rq\rq\ .The model can be fit using
+\begin{verbatim}
+cumulative.logit.2 <- ordinalgmifs(group ~ DDIT3_P1313_R, 
+     x = c("CDKN2B_seq_50_S294_F", "ERN1_P809_R", "GML_E144_F",
+     	    "HDAC9_P137_R"),  data = hccframe)
+summary(cumulative.logit.2)
+\end{verbatim}
+
+Predictions can be obtained using
+\begin{verbatim}
+phat<-predict(cumulative.logit.2)
+head(phat$class)
+head(phat$predicted)
+\end{verbatim}
+When predicting the outcome for a new set of observations, the \code{predict} function will accept arguments for \code{newx} (the penalized predictors), \code{neww} (the unpenalized predictors using model formula notation, and \code{newdata} (new \code{data.frame} that contains the unpenalized predictors). Suppose we want to leave observation 1 out, fit the model, then predict the class for observation 1 as a left out test set where we have coerced \code{DDIT3_P1313_R} in the model by including it as an unpenalized predictor. The following code would be used:
+\begin{verbatim}
+cumulative.logit.m1 <- ordinalgmifs(group ~ DDIT3_P1313_R, 
+     x = c("CDKN2B_seq_50_S294_F", "ERN1_P809_R", "GML_E144_F",
+     	    "HDAC9_P137_R"),  data = hccframe[-1,])
+predict(cumulative.logit.m1, neww=~DDIT3_P1313_R, newdata=hccframe[1,],
+	newx=hccframe[1,c("CDKN2B_seq_50_S294_F", "ERN1_P809_R", 
+	"GML_E144_F","HDAC9_P137_R")])
+\end{verbatim}
+Aside from a logit link, a probit or complementary log-log link can be used in conjuction with the cumulative link probability model. Here we include only the first five CpG sites to reduce computational time for this illustration. These three links are also available for \code{probability.model="ForwardCR"} and \newline
+\code{probability.model="BackwardCR"}. We previously demonstrated use of the forward continuation ratio model with a complementary log-log link for modeling a discrete survival outcome \citep{Ferber}.
+
+A stereotype logit model only uses a logit link while an adjacent category model only uses a $\log_e$ link. Misspecifying the link for either a stereotype logit or adjacent category yields a warning that is printed to the \proglang{R} console but only the correct link is used in the model fit. The following example illustrates specifying the data frame using \code{data}, the probability model using \code{probability.model}, and the link function using \code{link}.
+\begin{verbatim}
+adj.cat<-ordinalgmifs(group ~ 1, x = hccframe[, 2:6], 
+	data = hccframe, probability.model = "AdjCategory", link = "loge")
+summary(adj.cat)
+phat.adj <- predict(adj.cat)
+table(phat.adj$class, hccframe$group)
+\end{verbatim}
+
+%\subsection{Model Fitting for Data Stored in an ExpressionSet}
+%The \code{ordinalgmifs} function can be used to fit a model when high-dimensional genomic data are stored as a BioConductor ExpressionSet.  The \pkg{Biobase} BioConductor package is required to access the components of an ExpressionSet object. To install the BioConductor package \pkg{Biobase}, once R has been installed, open R by and install the \textit{biocLite} script which will install a subset of the most frequently used Bioconductor packages. From the R prompt type,
+%\begin{verbatim}
+%> source("http://www.bioconductor.org/biocLite.R")
+%\end{verbatim}
+%then
+%\begin{verbatim}
+%> biocLite() 
+%\end{verbatim}
+%Once installed, the \pkg{Biobase} package should be loaded by executing \code{library("Biobase")}. The full CpG site methylation dataset for the HCC example used in this vignette can be downloaded from Gene Expression Omnibus as accession number GSE18081 using the BioConductor package \texttt{GEOquery}. Once downloaded (suppose into an object named \code{hccmethyl}), the relevant CpG site methylation data can be extracted using \code{exprs(hccmethyl)} whereas phenotypic data can be extracted using \code{pData(hccmethyl)}. Any phenotypic data to be coerced into the model should appear on the right-hand side of the model formula, the \code{data = } parameter should call the phenotypic dataset, the ordinal outcome on the left-hand side of the model formula should be in the phenotypic dataset, and likely the genomic feature data (stored in the \code{exprs} slot) should be passed to the \code{x = } parameter.
+
+\section*{Acknowledgments}
+Research reported in this tutorial was supported by the National Library Of Medicine of the National Institutes of Health under Award Number R01LM011169. The content is solely the responsibility of the authors and does not necessarily represent the official views of the National Institutes of Health.
+
+\bibliography{ordinalgmifs}
+
+\end{document}
+
+
