@@ -1,7 +1,7 @@
 # ordinalgmifs
 Ordinal Regression for High-Dimensional Data
 
-CRAN package <a href>https://CRAN.R-project.org/package=countgmifs</a>
+CRAN package <a href>https://CRAN.R-project.org/package=ordinalgmifs</a>
 
 ## References
 1. Archer KJ, Hou J, Zhou Q, Ferber K, Layne JG, Gentry AE. ordinal- gmifs: An R package for ordinal regression in high-dimensional data settings. <i>Cancer Informatics</i>, 13:187-95, 2014. <a href> https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4266195/ </a>
