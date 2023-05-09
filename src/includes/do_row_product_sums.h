@@ -132,6 +132,7 @@ SEXP row_product_sums(double* A, double* B, int dims[2]) {
 
 	//  for each row in A & B:
 	for (; pAR<ARend; pAR++, pBR++, pS++) {
+	//for (pAR; pAR<ARend; pAR++, pBR++, pS++) {  -> 03/15/2023
 		sum = 0.0;
 		pACend = &*pAR + disp;
 		//  for each column in A & B:

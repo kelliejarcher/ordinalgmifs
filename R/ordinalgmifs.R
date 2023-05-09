@@ -35,8 +35,8 @@ ordinalgmifs<-function (formula, data, x = NULL, subset, epsilon = 0.001, tol = 
     }
     if (is.na(match(probability.model, c("Cumulative", "AdjCategory",
         "ForwardCR", "BackwardCR", "Stereotype")))) {
-        stop("Error:")
-        cat("Only Cumulative, AdjCategory, ForwardCR, BackwardCR, Stereotype available for probability.model parameter.\n")
+        stop("Error: Only Cumulative, AdjCategory, ForwardCR, BackwardCR, 
+Stereotype available for probability.model parameter.\n")
     }
     if (probability.model == "Stereotype" & link != "logit") {
         warning("Warning: Stereotype model only uses a logit link.")
@@ -47,16 +47,14 @@ ordinalgmifs<-function (formula, data, x = NULL, subset, epsilon = 0.001, tol = 
     if ((probability.model == "Cumulative" | probability.model ==
         "ForwardCR" | probability.model == "BackwardCR") & is.na(match(link,
         c("logit", "probit", "cloglog")))) {
-        stop("Error: ")
-        cat("Only logit, probit, and cloglog links available for ",
+        stop("Error: Only logit, probit, and cloglog links available for ",
             probability.model, " model.\n")
     }
 ###
 	if (probability.model == "ForwardCR") {
 		if (link == "cloglog" && "Surv" %in% is(y)) {
 			if ( !(assumption %in% c(1,2,3)) ) {
-				stop("Error: ")
-				cat("ForwardCR with cloglog link must specify assumption 1, 2, or 3 if Surv() outcome is modeling.\n")
+				stop("Error: ForwardCR with cloglog link must specify assumption 1, 2, or 3 if Surv() outcome is modeling.\n")
 			}
 			y.class <- "Surv"
 			censor <- y[, 2]

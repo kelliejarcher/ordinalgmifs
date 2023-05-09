@@ -27,6 +27,7 @@ default is \code{"trace"} which plots the coefficient path for the fitted object
 }
   \item{\dots}{other arguments.}
 }
+\value{No return value, called for side effects}
 \author{
 Kellie J. Archer
 }

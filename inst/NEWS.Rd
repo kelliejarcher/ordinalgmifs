@@ -38,3 +38,8 @@
   \item Fix potential PROTECT errors flagged by rchk.
   }
 }
+\section{Changes in version 1.0.8}{
+\itemize{
+  \item Relevant changes to be compatible with new C compiler.
+  }
+}

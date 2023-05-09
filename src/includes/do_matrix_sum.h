@@ -10,10 +10,6 @@
 
  ***********************************************************************/
 
-#ifndef boolean
-typedef enum boolean { true=1, false=0 } bool;
-#endif
-
 /////////////////////////////////////////////////////////////////////////
 //  function prototypes
 /////////////////////////////////////////////////////////////////////////
@@ -49,8 +45,7 @@ SEXP do_matrix_sum_rows(SEXP A) {
 		Rprintf("do_matrix_sum_rows...\n");
 		return R_NilValue;
 	}
-	int protections=0, 
-		*dims;
+	int protections=0, *dims;
 	double* pA;
 
 	PROTECT(A = AS_NUMERIC(A)); 
@@ -97,7 +92,6 @@ SEXP matrix_sum_rows(double* A, int dims[2]) {
 	if (!pS) {
 		Rprintf("C code matrix_sum_rows:  Couldn't allocate");
 		Rprintf("vector to return!\n");
-		UNPROTECT(protections);
 		return R_NilValue;
 	}
 	int dims0 = dims[0], dims1 = dims[1];
@@ -112,6 +106,7 @@ SEXP matrix_sum_rows(double* A, int dims[2]) {
 	//  REMEMBER, R is COLUMN major!!!!!!!!!!!!!!!!!
 	//  for each row in A:
 	for (; pAR<ARend; pAR++, pS++) {
+	//for (pAR; pAR<ARend; pAR++, pS++) {  -> 03/15/2023
 		pACend = &*pAR + disp;
 		//  for each column in Z:
 		sum = 0.0;

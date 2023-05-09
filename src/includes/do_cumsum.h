@@ -106,6 +106,7 @@ SEXP row_cumsum(double* A, int dims[2]) {
 
 	//  for each row in A:
 	for (; pAR<ARend; pAR++, pBC+=dispb) {
+	//for (pAR; pAR<ARend; pAR++, pBC+=dispb) {  -> 03/15/2023
 		sum = 0.0;
 		pARi = &*pAR;
 		//  for each item in this row of A, and this
@@ -204,12 +205,14 @@ SEXP col_cumsum(double* A, int dims[2]) {
 
 	//  for each column in A & B:
 	for (; pAC<=ACend; pAC+=dispa, pBC+=dispb) {
+	//for (pAC; pAC<=ACend; pAC+=dispa, pBC+=dispb) {  -> 03/15/2023
 		sum = 0.0;
 		pACi = &*pAC;
 		pBCi = &*pBC;
 		//  for each item in this column of A, and this
 		//  column of B:
-		for (; pACi<(pAC+dimsa0); pACi++, pBCi++) {
+		for (; pACi<(pAC+dimsa0); pACi++, pBCi++) {  
+		//for (pACi; pACi<(pAC+dimsa0); pACi++, pBCi++) {  -> 03/15/2023
 			sum += *pACi;
 			*pBCi = sum;
 		}

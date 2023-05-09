@@ -10,10 +10,6 @@
 
  ***********************************************************************/
 
-#ifndef boolean
-typedef enum boolean { true=1, false=0 } bool;
-#endif
-
 /////////////////////////////////////////////////////////////////////////
 //  function prototypes
 /////////////////////////////////////////////////////////////////////////
@@ -46,8 +42,7 @@ SEXP do_vector_sum(SEXP V) {
 		Rprintf("C code do_vector_sum...\n");
 		return R_NilValue;
 	}
-	int protections=0,
-		len;
+	int protections=0, len;
 	double* pV;
 
 	PROTECT(V = AS_NUMERIC(V)); 
@@ -88,7 +83,6 @@ SEXP vector_sum(double* V, int len) {
 	if (!pS) {
 		Rprintf("C code vector_sum:  Couldn't allocate");
 		Rprintf("vector to return!\n");
-		UNPROTECT(protections);
 		return R_NilValue;
 	}
 	//  use some pointer math for speed:
@@ -96,9 +90,11 @@ SEXP vector_sum(double* V, int len) {
 	double* pV = &*V;
 	double* Vend = &*pV + len;
 	//  step through items in vector:
+	//double* pVi;
 	//  use fastest memory in machine if available
-	register double sum = 0.0;
+	double sum = 0.0;
 	for (; pV<Vend; pV++) {
+	//for (pV=&*V; pV<Vend; pV++) {  -> 03/15/2023
 		sum += *pV;
 	}
 	*pS = sum;

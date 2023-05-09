@@ -23,7 +23,9 @@ Prints the following items extracted from the fitted \code{ordinalgmifs} object:
 the probability model and link used and model parameter estimates. For models that include
 \code{x}, the parameter estimates, AIC, BIC, and log-likelihood are printed for indicated \code{model.select} step or if \code{model.select} is not supplied the step at which the minimum AIC was observed.
 }
-
+\value{extracts the relevant information from the step in the solution 
+path that attained the minimum AIC (default) or at the user-defined 
+\code{model.select} step} 
 \author{
 Kellie J. Archer
 }

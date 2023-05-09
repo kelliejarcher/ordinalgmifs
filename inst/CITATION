@@ -1,8 +1,10 @@
 citHeader("To cite ordinalgmifs in publications use:")
 
-citEntry(entry = "Article",
+bibentry(bibtype = "Article",
   title        = "{ordinalgmifs}: An {R} Package for Ordinal Regression in High-dimensional Data Settings",
-  author       = personList(as.person("Kellie J. Archer"), as.person("Jiayi Hou"), as.person("Qing Zhou"), as.person("Kyle Ferber"), as.person("John G. Layne"), as.person("Amanda Elswick Gentry")),
+  author       = c(person(c("Kellie", "J."), "Archer"), person("Jiayi", "Hou"), 
+person("Qing", "Zhou"), person("Kyle", "Ferber"), person(c("John", "G."), 
+"Layne"), person(c("Amanda", "Elswick"), "Gentry")),
   journal      = "Cancer Informatics",
   year         = "2014",
   volume	   = "13",
@@ -10,7 +12,8 @@ citEntry(entry = "Article",
   url          = "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4266195/",
 
   textVersion  =
-  paste("Kellie J. Archer, Jiayi Hou, Qing Zhou, Kyle Ferber, John G. Layne, Amanda Gentry  (2014).",
+  paste0("Kellie J. Archer, Jiayi Hou, Qing Zhou, Kyle Ferber, John G. Layne, 
+Amanda Gentry  (2014).",
         "ordinalgmifs: An R Package for Ordinal Regression in High-dimensional Data Settings.",
         "Cancer Informatics, 13:187-195.",
         "URL https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4266195/")
@@ -18,9 +21,10 @@ citEntry(entry = "Article",
 
 citHeader("To cite the no penalty subset functionality of ordinalgmifs in publications use:")
 
-citEntry(entry = "Article",
+bibentry(bibtype = "Article",
   title        = "Penalized Ordinal Regression Methods for Predicting Stage of Cancer in High-Dimensional Covariate Spaces",
-  author       = personList(as.person("Amanda Elswick Gentry"), as.person("Colleen Jackson-Cook"), as.person("Debra Lyon"), as.person("Kellie J. Archer")),
+  author       = c(person(c("Amanda", "Elswick"), "Gentry"), person("Colleen", 
+"Jackson-Cook"), person("Debra", "Lyon"), person(c("Kellie", "J."), "Archer")),
   journal      = "Cancer Informatics",
   year         = "2015",
   volume	   = "14",
@@ -28,7 +32,8 @@ citEntry(entry = "Article",
   url          = "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4447150/",
 
   textVersion  =
-  paste("Amanda Gentry, Colleen Jackson-Cook, Debra Lyon, Kellie J. Archer  (2015).",
+  paste0("Amanda Gentry, Colleen Jackson-Cook, Debra Lyon, Kellie J. Archer  
+(2015).",
         "Penalized Ordinal Regression Methods for Predicting Stage of Cancer in High-Dimensional Covariate Spaces.",
         "Cancer Informatics, 14(Suppl 2):201-208.",
         "URL https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4447150/")
@@ -36,17 +41,17 @@ citEntry(entry = "Article",
 
 citHeader("To cite using the forward continuation ratio with a complementary log-log link for discrete survival modeling using ordinalgmifs in publications use:")
 
-citEntry(entry = "Article",
+bibentry(bibtype = "Article",
   title        = "Modeling Discrete Survival Time Using Genomic Feature Data.",
-  author       = personList(as.person("Kyle Ferber"), as.person("Kellie J. Archer")),
+  author       = c(person("Kyle", "Ferber"), person(c("Kellie", "J."), "Archer")),
   journal      = "Cancer Informatics",
   year         = "2015",
-  volume	   = "14",
+  volume       = "14",
   pages        = "37-43",
   url          = "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4360712/",
 
   textVersion  =
-  paste("Kyle Ferber, Kellie J. Archer  (2015).",
+  paste0("Kyle Ferber, Kellie J. Archer  (2015).",
         "Modeling Discrete Survival Time Using Genomic Feature Data.",
         "Cancer Informatics, 14(Suppl 2):37-43.",
         "URL https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4360712/")

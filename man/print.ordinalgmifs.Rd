@@ -13,7 +13,7 @@ This function prints the names of the list objects from an \code{ordinalgmifs} f
   \item{x}{an \code{ordinalgmifs} object.}
   \item{\dots}{other arguments.}
 }
-
+\value{returns the object names in the fitted ordinalgmifs object}
 \author{
 Kellie J. Archer
 }

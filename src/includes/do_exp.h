@@ -6,11 +6,6 @@
 				Dr. Kellie Archer's fn.cum function in her R code.
  ***********************************************************************/
 
-#ifndef boolean
-typedef enum boolean { true=1, false=0 } bool;
-#define boolean
-#endif
-
 /////////////////////////////////////////////////////////////////////////
 //  function prototypes
 /////////////////////////////////////////////////////////////////////////
@@ -59,9 +54,7 @@ SEXP do_exp(SEXP k, SEXP Z, SEXP pizmat) {
 		return R_NilValue;
 	}
 
-	int len=0, 
-		protections=0, 
-		*zdims;
+	int len=0, protections=0, *zdims;
 	double* pZ;
 	double* piz;
 	
@@ -143,6 +136,7 @@ SEXP exp_ptr(int k, int dims[2], double* Z, double* p) {
 	//  REMEMBER, R is COLUMN major!!!!!!!!!!!!!!!!!
 	//  for each row in Z:
 	for (; pZR<ZRend; pZR++, pPR++) {
+	//for (pZR; pZR<ZRend; pZR++, pPR++) {  -> 03/15/2023
 		pZCend = &*pZR + disp;
 		//  for each column in Z:
 		j = 0;

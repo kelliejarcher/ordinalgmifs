@@ -107,7 +107,7 @@ SEXP mult_matrix_ptr(double* A, int dimsa[2],
 
 	//  make it a bit easier & more readable
 	//  to handle array dimensions later on:
-	int dimsa0 = dimsa[0], dimsa1 = dimsa[1];
+	int dimsa0 = dimsa[0]; //, dimsa1 = dimsa[1]; -> 05/03/2023
 	int dimsb0 = dimsb[0], dimsb1 = dimsb[1];
 	//  I use "displacements" as a means to
 	//  step through the arrays in the proper
@@ -116,7 +116,7 @@ SEXP mult_matrix_ptr(double* A, int dimsa[2],
 	//  So I have to figure out, for instance,
 	//  how many "double addresses" to step
 	//  to advance 1 column, and so on...
-	int dispa  = dimsa0 * (dimsa1 - 1);
+	//int dispa  = dimsa0 * (dimsa1 - 1);  ->  05/03/2023
 	int dispb  = dimsb0;
 	int dispm  = dimsa0;
 	/*  
@@ -126,7 +126,7 @@ SEXP mult_matrix_ptr(double* A, int dimsa[2],
 		The size of the final matrix is determined by the rows in the 
 		left matrix (A) and the columns in the right (B).
 	*/
-	int protections=0;
+	int protections = 0;
 	SEXP M;
 	PROTECT(M = allocMatrix(REALSXP, dimsa0, dimsb1));
 	protections++;
@@ -144,11 +144,11 @@ SEXP mult_matrix_ptr(double* A, int dimsa[2],
 	double* pAR = &*A;
 	double* ARend = &*pAR + dimsa[0];
 	double* pBR = &*B;
-	//double* BRend = &*pBR + dimsb[0];
+	//double* BRend = &*pBR + dimsb[0];  --> 03/15/2023
 	double* pBCend = &B[dimsb[0] * dimsb[1] - dimsb[0]];
-	double* pACend;
+	//double* pACend; -> 05/01/2023
 	//  incrementers for items in matrices:
-	//double* pAC;
+	//double* pAC;  -> 03/15/2023
 	double* pACi;
 	double* pBC;
 	double* pBCi;
@@ -157,7 +157,8 @@ SEXP mult_matrix_ptr(double* A, int dimsa[2],
 	//  REMEMBER, R is COLUMN major!!!!!!!!!!!!!!!!!
 	//  for each row in A:
 	for (; pAR<ARend; pAR++, pMR++) {
-		pACend = &*pAR + dispa;
+	//for (pAR; pAR<ARend; pAR++, pMR++) {  -> 03/15/2023
+		//pACend = &*pAR + dispa;  -> 05/01/2023
 		pMCi = &*pMR;
 		//  for each column in B:
 		for (pBC=&*pBR; pBC<=pBCend; pBC+=dispb) {

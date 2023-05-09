@@ -11,10 +11,6 @@
 
  ***********************************************************************/
 
-#ifndef boolean
-typedef enum boolean { true=1, false=0 } bool;
-#endif
-
 /////////////////////////////////////////////////////////////////////////
 //  function prototypes
 /////////////////////////////////////////////////////////////////////////
@@ -47,8 +43,7 @@ SEXP do_row_products(SEXP A) {
 		Rprintf("C code do_row_products...\n");
 		return R_NilValue;
 	}
-	int protections=0, 
-		*dims;
+	int protections=0, *dims;
 	double* pA;
 
 	PROTECT(A = AS_NUMERIC(A)); 
@@ -96,7 +91,6 @@ SEXP row_products(double* A, int dims[2]) {
 	if (!pS) {
 		Rprintf("C code row_products:  Couldn't allocate");
 		Rprintf("vector to return!\n");
-		UNPROTECT(protections);
 		return R_NilValue;
 	}
 	int dims0 = dims[0], dims1 = dims[1];
@@ -112,6 +106,7 @@ SEXP row_products(double* A, int dims[2]) {
 	//  REMEMBER, R is COLUMN major!!!!!!!!!!!!!!!!!
 	//  for each row in A:
 	for (; pAR<ARend; pAR++, pS++) {
+	//for (pAR; pAR<ARend; pAR++, pS++) {  -> 03/15/2023
 		pACend = &*pAR + disp;
 		//  for each column in A (step across this row):
 		pAC = &*pAR;
